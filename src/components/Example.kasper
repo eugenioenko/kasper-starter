@@ -1,0 +1,266 @@
+<template>
+  <div class="example">
+    <header class="example-header">
+      <h2>Examples</h2>
+    </header>
+
+    <div class="example-grid">
+      <section class="card">
+        <h3>Signal</h3>
+        <p class="count-display">Count: <strong>{{count.value}}</strong></p>
+        <div class="button-group">
+          <button @on:click="increment()">Increment</button>
+          <button class="secondary" @on:click="reset()">Reset</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h3>If / Else</h3>
+        <div class="badge-container">
+          <p @if="count.value > 5" class="badge badge--high">High Count (> 5)</p>
+          <p @elseif="count.value > 0" class="badge badge--mid">Mid Count (1-5)</p>
+          <p @else class="badge badge--zero">Zero Count</p>
+        </div>
+      </section>
+
+      <section class="card">
+        <h3>Each</h3>
+        <ul class="item-list">
+          <li @each="item of items.value" class="list-item">
+            <span class="dot"></span>
+            {{item}}
+          </li>
+        </ul>
+        <button class="add-button" @on:click="addItem()">Add Item</button>
+      </section>
+
+      <section class="card">
+        <h3>Two-Way Binding</h3>
+        <div class="form-group">
+          <label for="name-input">Name</label>
+          <input 
+            id="name-input"
+            type="text" 
+            placeholder="Type your name..."
+            @value="name.value" 
+            @on:input="name.value = $event.target.value" 
+          />
+        </div>
+        <p class="preview-text">Hello, <strong>{{name.value || 'stranger'}}</strong>!</p>
+      </section>
+    </div>
+  </div>
+</template>
+
+<script>
+import { Component, signal } from 'kasper-js';
+
+export class Example extends Component {
+  count = signal(0);
+  items = signal(['Apple', 'Banana', 'Cherry']);
+  name = signal("John Doe");
+
+  increment() {
+    this.count.value++;
+  }
+
+  reset() {
+    this.count.value = 0;
+  }
+
+  addItem() {
+    const next = ['Date', 'Elderberry', 'Fig', 'Grape', 'Honeydew'];
+    const i = this.items.value.length - 3;
+    this.items.value = [...this.items.value, next[i % next.length]];
+  }
+}
+</script>
+
+<style>
+.example {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  color: #e0e0e0;
+}
+
+.example-header {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #2a2d2f;
+  padding-bottom: 1rem;
+  text-align: center;
+}
+
+.example h2 {
+  font-size: 1.25rem;
+  color: #fff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.example-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  background: #1a1c1e;
+  border: 1px solid #2a2d2f;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.card:hover {
+  border-color: #3a3d3f;
+}
+
+.card h3 {
+  font-size: 0.75rem;
+  color: #d41d67;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 1.25rem;
+  font-weight: 700;
+}
+
+.count-display {
+  font-size: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.count-display strong {
+  color: #fff;
+}
+
+.button-group {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: auto;
+}
+
+.example button {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  background: #d41d67;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.example button:hover {
+  opacity: 0.9;
+}
+
+.example button:active {
+  transform: translateY(1px);
+}
+
+.example button.secondary {
+  background: #2a2d2f;
+  color: #ccc;
+}
+
+.example button.secondary:hover {
+  background: #3a3d3f;
+  color: #fff;
+}
+
+.badge-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.badge--high { background: #d41d67; color: white; }
+.badge--mid  { background: #1a2a0d; color: #6abf40; border: 1px solid #2a3d1d; }
+.badge--zero { background: #2a2d2f; color: #aaa; }
+
+.item-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1.5rem;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #232527;
+  color: #ccc;
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  background: #d41d67;
+  border-radius: 50%;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  font-size: 0.8rem;
+  color: #888;
+  font-weight: 500;
+}
+
+.example input[type="text"] {
+  background: #0d0e0f;
+  border: 1px solid #2a2d2f;
+  border-radius: 6px;
+  padding: 0.75rem;
+  color: #fff;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.example input[type="text"]:focus {
+  outline: none;
+  border-color: #d41d67;
+  box-shadow: 0 0 0 2px rgba(212, 29, 103, 0.2);
+}
+
+.preview-text {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.preview-text strong {
+  color: #fff;
+}
+</style>
